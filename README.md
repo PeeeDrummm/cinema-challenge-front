@@ -89,7 +89,6 @@ cinema-app-frontend/
 1. Clone the repository
    ```bash
    git clone <repository-url>
-   cd cinema-app-frontend
    ```
 
 2. Install dependencies
