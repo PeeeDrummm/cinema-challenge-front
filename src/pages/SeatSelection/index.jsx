@@ -232,9 +232,9 @@ const SeatSelection = () => {
               onClick={handleResetSeats}
               disabled={resetLoading}
               className="btn btn-primary btn-sm reset-seats-btn"
-              title={user && user.role === 'admin' ? "Resetar todos os assentos para disponível no banco de dados" : "Demonstração: torna todos os assentos disponíveis (apenas localmente)"}
+              title={user && user.role === 'admin' ? "Resetar todos os assentos para disponível no banco de dados" : "Torna todos os assentos disponíveis (apenas localmente)"}
             >
-              {resetLoading ? 'Processando...' : <><FaSync /> {user && user.role === 'admin' ? 'Resetar Assentos' : 'Demonstração: Liberar Assentos'}</>}
+              {resetLoading ? 'Processando...' : <><FaSync /> {user && user.role === 'admin' ? 'Resetar Assentos' : 'Liberar Assentos'}</>}
             </button>
           </div>
         </div>
