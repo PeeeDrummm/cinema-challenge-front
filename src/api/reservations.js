@@ -44,18 +44,41 @@ const reservationsService = {
       throw error.response?.data || { message: 'Erro ao buscar reserva' };
     }
   },
-
   /**
-   * Create a new reservation
-   * @param {Object} reservationData - Reservation data
+   * Create a new reservation with checkout
+   * @param {Object} reservationData - Reservation data including session, seats, and paymentMethod
    * @returns {Promise} Response from API
    */
   createReservation: async (reservationData) => {
     try {
+      console.log('Creating reservation with data:', reservationData);
       const response = await api.post('/reservations', reservationData);
+      
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Erro ao processar reserva');
+      }
+      
       return response.data;
     } catch (error) {
-      throw error.response?.data || { message: 'Erro ao criar reserva' };
+      console.error('Reservation creation error:', error);
+      
+      // Check for specific error types
+      if (error.response?.status === 400) {
+        // Bad request - likely seat availability issues
+        throw { 
+          message: error.response.data.message || 'Assentos selecionados não estão mais disponíveis',
+          type: 'seat_availability'
+        };
+      } else if (error.response?.status === 401) {
+        // Authentication issue
+        throw { 
+          message: 'Sessão expirada. Por favor, faça login novamente',
+          type: 'authentication'
+        };
+      } else {
+        // Generic error
+        throw error.response?.data || { message: 'Erro ao criar reserva. Tente novamente.' };
+      }
     }
   },
 

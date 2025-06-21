@@ -11,8 +11,37 @@
   overflow: hidden;
 }
 
+/* Tabs */
+.profile-tabs {
+  display: flex;
+  background-color: var(--background-light);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  color: var(--text-muted);
+}
+
+.tab.active {
+  color: var(--primary);
+  border-bottom: 3px solid var(--primary);
+  background-color: rgba(103, 58, 183, 0.05);
+}
+
+.tab:hover:not(.active) {
+  color: var(--primary-dark);
+  background-color: rgba(103, 58, 183, 0.02);
+}
+
 .profile-header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
   padding: 2rem;
   text-align: center;
@@ -28,6 +57,19 @@
 
 .profile-content {
   padding: 2rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.section h2 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .profile-form {
@@ -208,6 +250,148 @@
   to { transform: scale(1); opacity: 1; }
 }
 
+/* Reservations Styling */
+.reservations-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-reservations {
+  background-color: var(--bg-light);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-reservations p {
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+}
+
+.reservations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.reservation-card {
+  background-color: var(--background-light);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.movie-info {
+  display: flex;
+  gap: 1rem;
+}
+
+.movie-poster {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.poster-placeholder {
+  width: 100px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background);
+  color: var(--text-muted);
+  font-size: 2rem;
+}
+
+.reservation-details {
+  flex: 1;
+  padding: 1rem;
+  padding-left: 0;
+}
+
+.reservation-details h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  color: var(--primary);
+}
+
+.session-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.session-info p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.seats-info {
+  margin: 0.75rem 0;
+}
+
+.seat-tag {
+  display: inline-block;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.reservation-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color-light);
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-badge.confirmed {
+  background-color: var(--success-light);
+  color: var(--success);
+}
+
+.status-badge.pending {
+  background-color: var(--warning-light);
+  color: var(--warning);
+}
+
+.status-badge.cancelled {
+  background-color: var(--error-light);
+  color: var(--error);
+}
+
+.price {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--primary);
+}
+
 @media (max-width: 768px) {
   .profile-container {
     border-radius: 0;
@@ -220,5 +404,19 @@
   
   .profile-content {
     padding: 1.5rem 1rem;
+  }
+  
+  .movie-info {
+    flex-direction: column;
+  }
+  
+  .movie-poster,
+  .poster-placeholder {
+    width: 100%;
+    height: 200px;
+  }
+  
+  .reservation-details {
+    padding: 1rem;
   }
 }
