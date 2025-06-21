@@ -47,8 +47,7 @@ const Header = () => {
               </Link>
             </li>
             {isAuthenticated ? (
-              <>
-                <li>
+              <>                <li>
                   <Link to="/reservations" onClick={() => setIsMenuOpen(false)}>
                     <FaTicketAlt /> Minhas Reservas
                   </Link>

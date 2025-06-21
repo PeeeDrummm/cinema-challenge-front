@@ -321,15 +321,20 @@ const SeatSelection = () => {
               <span>Total:</span>
               <span className="price">R$ {calculateTotal().toFixed(2)}</span>
             </div>
-          </div>
-
-          <div className="action-buttons">
+          </div>          <div className="action-buttons">
             <button
               className="btn btn-primary checkout-button"
               disabled={selectedSeats.length === 0}
               onClick={() => {
-                // This will be implemented in the future
-                alert('Funcionalidade de checkout será implementada em breve!');
+                navigate('/checkout', {
+                  state: {
+                    session: session,
+                    selectedSeats: selectedSeats.map(seat => ({
+                      ...seat,
+                      type: 'full' // Default all to full price for demo
+                    }))
+                  }
+                });
               }}
             >
               Continuar para Pagamento

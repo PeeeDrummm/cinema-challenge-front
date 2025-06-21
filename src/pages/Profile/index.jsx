@@ -1,29 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { FaUser, FaEnvelope, FaKey, FaSave, FaExclamationTriangle, FaCheckCircle, FaTimes } from 'react-icons/fa';
+import { Navigate, Link } from 'react-router-dom';
+import { 
+  FaUser, FaEnvelope, FaKey, FaSave, FaExclamationTriangle, 
+  FaCheckCircle, FaTimes, FaTicketAlt, FaCalendarAlt, 
+  FaFilm, FaMapMarkerAlt, FaClock 
+} from 'react-icons/fa';
 import useAuth from '../../hooks/useAuth';
 import useAlert from '../../hooks/useAlert';
+import reservationsService from '../../api/reservations';
 import './styles.css';
 
-const Profile = () => {
-  const { user, isAuthenticated, updateProfile } = useAuth();
+const Profile = () => {  const { user, isAuthenticated, updateProfile } = useAuth();
   const { showAlert } = useAlert();
-    const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     currentPassword: '',
     newPassword: '',
     confirmNewPassword: '',
   });
-  
   const [loading, setLoading] = useState(false);
+  const [reservations, setReservations] = useState([]);
+  const [reservationsLoading, setReservationsLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
   // Debug log when component renders
-  console.log('Profile component rendering with user:', user);
-
-  // Effect to update form data when user changes
+  console.log('Profile component rendering with user:', user);  // Effect to update form data when user changes
   useEffect(() => {
     if (user) {
       console.log('User data in Profile component:', user);
@@ -34,6 +37,30 @@ const Profile = () => {
       }));
     }
   }, [user]);
+
+  // Effect to load user reservations
+  useEffect(() => {
+    const loadReservations = async () => {
+      if (!isAuthenticated) return;
+      
+      try {
+        setReservationsLoading(true);
+        const response = await reservationsService.getMyReservations();
+        
+        if (response && response.success && response.data) {
+          setReservations(response.data);
+        } else {
+          console.error('Error loading reservations:', response);
+        }
+      } catch (error) {
+        console.error('Failed to load reservations:', error);
+      } finally {
+        setReservationsLoading(false);
+      }
+    };
+    
+    loadReservations();
+  }, [isAuthenticated]);
 
   // Redirect if not logged in
   if (!isAuthenticated) {
@@ -139,15 +166,25 @@ const Profile = () => {
           </div>
         </div>
       )}
-      
-      <div className="profile-container">
+        <div className="profile-container">
+        <div className="profile-tabs">
+          <div className="tab active">
+            <FaUser /> Meu Perfil
+          </div>
+          <div className="tab">
+            <FaTicketAlt /> Minhas Reservas
+          </div>
+        </div>
+        
         <div className="profile-header">
           <h1><FaUser /> Meu Perfil</h1>
           <p>Gerencie suas informações pessoais e credenciais de acesso</p>
         </div>
         
         <div className="profile-content">
-          <form onSubmit={handleSubmit} className="profile-form">            <div className="form-group">
+          <div className="section user-info">
+            <h2>Informações Pessoais</h2>
+            <form onSubmit={handleSubmit} className="profile-form"><div className="form-group">
               <label htmlFor="name">
                 <FaUser /> Nome Completo
               </label>
@@ -240,9 +277,87 @@ const Profile = () => {
                     <FaSave /> Salvar Alterações
                   </>
                 )}
-              </button>
-            </div>
+              </button>            </div>
           </form>
+          </div>
+          
+          <div className="section reservations-section">
+            <h2><FaTicketAlt /> Minhas Reservas</h2>
+            
+            {reservationsLoading ? (
+              <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Carregando suas reservas...</p>
+              </div>
+            ) : reservations.length === 0 ? (
+              <div className="empty-reservations">
+                <p>Você ainda não possui nenhuma reserva.</p>
+                <Link to="/movies" className="btn btn-primary">Explorar Filmes</Link>
+              </div>
+            ) : (
+              <div className="reservations-list">
+                {reservations.map(reservation => (
+                  <div key={reservation._id} className="reservation-card">
+                    <div className="movie-info">
+                      {reservation.session?.movie?.poster ? (
+                        <img 
+                          src={reservation.session.movie.poster} 
+                          alt={reservation.session.movie.title} 
+                          className="movie-poster"
+                        />
+                      ) : (
+                        <div className="poster-placeholder">
+                          <FaFilm />
+                        </div>
+                      )}
+                      
+                      <div className="reservation-details">
+                        <h3>{reservation.session?.movie?.title || 'Filme não disponível'}</h3>
+                        
+                        <div className="session-info">
+                          <p>
+                            <FaCalendarAlt /> 
+                            {reservation.session?.datetime 
+                              ? new Date(reservation.session.datetime).toLocaleDateString('pt-BR') 
+                              : 'Data não disponível'}
+                          </p>
+                          <p>
+                            <FaClock /> 
+                            {reservation.session?.datetime 
+                              ? new Date(reservation.session.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) 
+                              : 'Horário não disponível'}
+                          </p>
+                          <p>
+                            <FaMapMarkerAlt /> 
+                            {reservation.session?.theater?.name || 'Cinema não disponível'}
+                          </p>
+                        </div>
+                        
+                        <div className="seats-info">
+                          <strong>Assentos:</strong> 
+                          {reservation.seats.map(seat => (
+                            <span key={`${seat.row}-${seat.number}`} className="seat-tag">
+                              {seat.row}{seat.number} ({seat.type === 'half' ? 'Meia' : 'Inteira'})
+                            </span>
+                          ))}
+                        </div>
+                        
+                        <div className="reservation-footer">
+                          <span className={`status-badge ${reservation.status}`}>
+                            {reservation.status === 'confirmed' ? 'Confirmada' : 
+                             reservation.status === 'pending' ? 'Pendente' : 'Cancelada'}
+                          </span>
+                          <span className="price">
+                            R$ {reservation.totalPrice?.toFixed(2) || '0.00'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

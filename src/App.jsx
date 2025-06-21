@@ -10,9 +10,11 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MovieDetail from './pages/MovieDetail';
 import SeatSelection from './pages/SeatSelection';
+import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import ApiDiagnostics from './pages/ApiDiagnostics';
+import MyReservations from './pages/MyReservations';
 
 // Context providers
 import AuthProvider from './context/AuthContext';
@@ -20,10 +22,6 @@ import AlertProvider from './context/AlertContext';
 
 // Commented out imports for components that don't exist yet
 /*
-import Checkout from './pages/Checkout';
-import Profile from './pages/Profile';
-import MyReservations from './pages/MyReservations';
-
 // Admin pages
 import AdminDashboard from './pages/Admin/Dashboard';
 import MovieManagement from './pages/Admin/MovieManagement';
@@ -45,18 +43,12 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/movies" element={<Movies />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/movies/:id" element={<MovieDetail />} />
-          <Route path="/sessions/:id" element={<SeatSelection />} />
-          <Route path="/api-diagnostics" element={<ApiDiagnostics />} />
-            {/* Protected Routes */}
-          {/* 
-          <Route path="/checkout" element={<Checkout />} />
-          */}
+              <Route path="/register" element={<Register />} />              <Route path="/movies/:id" element={<MovieDetail />} />
+              <Route path="/sessions/:id" element={<SeatSelection />} />
+              <Route path="/api-diagnostics" element={<ApiDiagnostics />} />
+              {/* Protected Routes */}          <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
-          {/*
           <Route path="/reservations" element={<MyReservations />} />
-          */}
           
           {/* Admin Routes - Temporarily commented out until components are created */}
           {/*
